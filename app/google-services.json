@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "174421889739",
+    "firebase_url": "https://gauravv007-default-rtdb.firebaseio.com",
+    "project_id": "gauravv007",
+    "storage_bucket": "gauravv007.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174421889739:android:f751f170cad964faae014e",
+        "android_client_info": {
+          "package_name": "com.example.buythings"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174421889739-krok7iq38fclq769mspc2lrm981bh77o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMxMfY6X8tQxWknI-cWmR3Dm01uIeW09I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "174421889739-krok7iq38fclq769mspc2lrm981bh77o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
