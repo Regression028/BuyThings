@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
  * What the UI needs to know at any given moment:
  * are we loading, did it succeed, or did it fail (and with what message)?
  */
-sealed class AuthUiState {
+sealed class AuthUiState { //sealed class holds data
     object Idle : AuthUiState()
     object Loading : AuthUiState()
     object Success : AuthUiState()
