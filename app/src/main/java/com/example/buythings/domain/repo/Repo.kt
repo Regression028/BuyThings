@@ -7,6 +7,7 @@ import com.example.buythings.data.models.CategoryData
 import com.example.buythings.data.models.BannerData
 import com.example.buythings.data.models.ProductData
 import com.example.buythings.data.models.UserData
+import com.example.buythings.data.models.UserDataParent
 import kotlinx.coroutines.flow.Flow
 
 interface Repo {
@@ -15,7 +16,7 @@ interface Repo {
 
     fun loginUserWithEmailAndPassword(email: String, password: String): Flow<ResultState<String>>
 
-    fun getUserById(uid: String): Flow<ResultState<UserData>>
+    fun getUserById(uid: String): Flow<ResultState<UserDataParent>>
 
     fun updateUserData(userData: UserData): Flow<ResultState<String>>
 
@@ -38,6 +39,8 @@ interface Repo {
     fun getCart(): Flow<ResultState<List<CartItem>>>
 
     fun getAllCategories(): Flow<ResultState<List<CategoryData>>>
+
+    fun getCheckOut(): Flow<ResultState<List<CartItem>>>
 
     fun getSpecificCategoryItems(categoryName: String): Flow<ResultState<List<ProductData>>>
 

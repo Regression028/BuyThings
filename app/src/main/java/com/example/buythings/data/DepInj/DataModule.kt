@@ -1,5 +1,7 @@
 package com.example.buythings.data.DepInj
 
+import com.example.buythings.data.repo.RepoImpl
+import com.example.buythings.domain.repo.Repo
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -22,6 +24,11 @@ object DataModule{
     fun provideFirebaseFirestore(): FirebaseFirestore
     {
         return FirebaseFirestore.getInstance()
+    }@Singleton
+    @Provides
+    fun provideRepo(repoImpl: RepoImpl): Repo {
+        return repoImpl
     }
+
 
 }
