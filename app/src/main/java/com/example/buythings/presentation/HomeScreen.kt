@@ -19,6 +19,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.buythings.presentation.ViewModels.HomeViewModel
 
 private val BackgroundBlack = Color(0xFF121212)
 private val CardDark = Color(0xFF1E1E1E)
@@ -36,10 +39,18 @@ private val TextGray = Color(0xFF9E9E9E)
 private val CoralPink = Color(0xFFF08080)
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel()
+) {
 
     var searchText by remember {
         mutableStateOf("")
+    }
+
+    val uiState = viewModel.uiState
+
+    LaunchedEffect(Unit) {
+        viewModel.getHomeData()
     }
 
     Column(
@@ -59,6 +70,7 @@ fun HomeScreen() {
         ) {
 
             Column {
+
                 Text(
                     text = "Welcome to",
                     color = TextGray,
@@ -75,6 +87,7 @@ fun HomeScreen() {
             IconButton(
                 onClick = { }
             ) {
+
                 Icon(
                     imageVector = Icons.Outlined.NotificationsNone,
                     contentDescription = "Notifications",
@@ -120,10 +133,53 @@ fun HomeScreen() {
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // Categories
         Text(
             text = "Categories",
             color = TextWhite,
             fontSize = 22.sp
         )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Categories from Firestore
+        uiState.categories.forEach { category ->
+
+            Text(
+                text = category.name,
+                color = TextWhite,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Products
+        Text(
+            text = "Products",
+            color = TextWhite,
+            fontSize = 22.sp
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Products from Firestore
+        uiState.products.forEach { product ->
+
+            Text(
+                text = product.name,
+                color = TextWhite,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+
+            Text(
+                text = "₹${product.price}",
+                color = CoralPink,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
     }
 }
