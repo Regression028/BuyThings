@@ -26,11 +26,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.buythings.data.models.UserData
 
 @Composable
 fun SignUp(
-    authViewModel: AuthViewModel = viewModel(),
+    authViewModel: AuthViewModel = hiltViewModel(),
     onSignUpSuccess: () -> Unit = {},
     onLoginClick: () -> Unit = {}
 ) {
@@ -165,7 +167,15 @@ fun SignUp(
                         // TODO: firstName, lastName, phone aren't stored by Firebase Auth itself —
                         // once Firestore is set up, we'll save these as a user profile document
                         // right after this call succeeds.
-                        authViewModel.signUp(email, password)
+                        authViewModel.signUp(
+                            UserData(
+                                firstName = firstName,
+                                lastName = lastName,
+                                email = email,
+                                phoneNumber = phone
+                            ),
+                            password
+                        )
                     }
                 },
                 enabled = uiState !is AuthUiState.Loading,

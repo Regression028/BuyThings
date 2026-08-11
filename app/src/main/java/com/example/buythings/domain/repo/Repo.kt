@@ -47,4 +47,15 @@ interface Repo {
     fun getAllSuggestedProducts(): Flow<ResultState<List<ProductData>>>
 
     fun getBanner(): Flow<ResultState<List<BannerData>>>
+
+    fun updateCartQuantity(
+        cartItemId: String,
+        quantity: Int
+    ): Flow<ResultState<String>>
+
+    fun removeFromCart(
+        cartItemId: String
+    ): Flow<ResultState<String>>
+
+    fun clearCart(): Flow<ResultState<String>>
 }

@@ -464,4 +464,142 @@ class RepoImpl @Inject constructor(
 
         awaitClose()
     }
+    override fun updateCartQuantity(
+        cartItemId: String,
+        quantity: Int
+    ): Flow<ResultState<String>> = callbackFlow {
+
+        trySend(ResultState.Loading)
+
+        val uid = firebaseAuth.currentUser?.uid
+
+        if (uid == null) {
+            trySend(ResultState.Error("User is not logged in"))
+            close()
+            return@callbackFlow
+        }
+
+        if (quantity <= 0) {
+            trySend(ResultState.Error("Quantity must be greater than 0"))
+            close()
+            return@callbackFlow
+        }
+
+        firebaseFirestore
+            .collection("ADD_TO_CART")
+            .document(uid)
+            .collection("User_Cart")
+            .document(cartItemId)
+            .update("quantity", quantity)
+            .addOnSuccessListener {
+                trySend(ResultState.Success("Cart quantity updated"))
+                close()
+            }
+            .addOnFailureListener { exception ->
+                trySend(
+                    ResultState.Error(
+                        exception.localizedMessage
+                            ?: "Failed to update cart quantity"
+                    )
+                )
+                close()
+            }
+
+        awaitClose()
+    }
+
+    override fun removeFromCart(
+        cartItemId: String
+    ): Flow<ResultState<String>> = callbackFlow {
+
+        trySend(ResultState.Loading)
+
+        val uid = firebaseAuth.currentUser?.uid
+
+        if (uid == null) {
+            trySend(ResultState.Error("User is not logged in"))
+            close()
+            return@callbackFlow
+        }
+
+        firebaseFirestore
+            .collection("ADD_TO_CART")
+            .document(uid)
+            .collection("User_Cart")
+            .document(cartItemId)
+            .delete()
+            .addOnSuccessListener {
+                trySend(ResultState.Success("Product removed from cart"))
+                close()
+            }
+            .addOnFailureListener { exception ->
+                trySend(
+                    ResultState.Error(
+                        exception.localizedMessage
+                            ?: "Failed to remove product from cart"
+                    )
+                )
+                close()
+            }
+
+        awaitClose()
+    }
+    override fun clearCart(): Flow<ResultState<String>> = callbackFlow {
+
+        trySend(ResultState.Loading)
+
+        val uid = firebaseAuth.currentUser?.uid
+
+        if (uid == null) {
+            trySend(ResultState.Error("User is not logged in"))
+            close()
+            return@callbackFlow
+        }
+
+        firebaseFirestore
+            .collection("ADD_TO_CART")
+            .document(uid)
+            .collection("User_Cart")
+            .get()
+            .addOnSuccessListener { snapshot ->
+
+                if (snapshot.isEmpty) {
+                    trySend(ResultState.Success("Cart is already empty"))
+                    close()
+                    return@addOnSuccessListener
+                }
+
+                val batch = firebaseFirestore.batch()
+
+                snapshot.documents.forEach { document ->
+                    batch.delete(document.reference)
+                }
+
+                batch.commit()
+                    .addOnSuccessListener {
+                        trySend(ResultState.Success("Cart cleared successfully"))
+                        close()
+                    }
+                    .addOnFailureListener { exception ->
+                        trySend(
+                            ResultState.Error(
+                                exception.localizedMessage
+                                    ?: "Failed to clear cart"
+                            )
+                        )
+                        close()
+                    }
+            }
+            .addOnFailureListener { exception ->
+                trySend(
+                    ResultState.Error(
+                        exception.localizedMessage
+                            ?: "Failed to get cart items"
+                    )
+                )
+                close()
+            }
+
+        awaitClose()
+    }
 }

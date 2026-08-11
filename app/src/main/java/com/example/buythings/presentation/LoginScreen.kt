@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.widget.Toast
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.buythings.presentation.AuthUiState
 import com.example.buythings.presentation.AuthViewModel
@@ -46,7 +47,7 @@ private val TextWhite = Color(0xFFF5F5F5) //white smoke
 
 @Composable
 fun LoginScreen(
-    authViewModel: AuthViewModel = viewModel(),
+    authViewModel: AuthViewModel = hiltViewModel(),
     onLoginSuccess: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {},
     onSignupClick: () -> Unit = {},

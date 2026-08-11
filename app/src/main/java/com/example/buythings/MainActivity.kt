@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.app.ui.login.LoginScreen
 import com.example.buythings.presentation.HomeScreen
 import com.example.buythings.presentation.SignUp
 import com.example.buythings.presentation.TestUploadScreen
@@ -25,11 +26,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BuyThingsTheme {
-                RegistrationSuccessDialog(
-                    onGoToHome = {
-
-                    }
-                )
+               LoginScreen ()
             }
 
         }
