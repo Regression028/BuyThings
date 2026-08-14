@@ -223,6 +223,10 @@ class CartViewModel @Inject constructor(
 
         val deliveryFee = if (subtotal > 0) 50.0 else 0.0
 
+
+
+
+
         val discount = if (subtotal >= 2000) 200.0 else 0.0
 
         val total = subtotal + deliveryFee - discount
