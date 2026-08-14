@@ -24,7 +24,7 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF171717),
     onSurfaceVariant = Color(0xFF666666)
 )
-
+//these are all the colors
 
 @Composable
 fun BuyThingsTheme(
