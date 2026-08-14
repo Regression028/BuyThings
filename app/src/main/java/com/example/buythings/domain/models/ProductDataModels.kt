@@ -9,44 +9,21 @@ package com.example.buythings.data.models
  * this product's category will be non-null.
  */
 data class ProductData(
-    val id: String = "",                 // set from document ID when reading
+    val id: String = "",
     val name: String = "",
     val description: String = "",
     val price: Double = 0.0,
-    val categoryId: String = "",         // matches a document ID in "categories", e.g. "mobiles"
+    val originalPrice: Double = 0.0,
+    val categoryId: String = "",
     val imageUrl: String = "",
     val stock: Int = 0,
     val rating: Double = 0.0,
     val createdAt: Long = System.currentTimeMillis(),
-
-    // Only ONE of these will be non-null, matching categoryId
-    val phoneDetails: PhoneDetails? = null,
-    val shoeDetails: ShoeDetails? = null,
-    val clothingDetails: ClothingDetails? = null,
-    val headphoneDetails: HeadphoneDetails? = null
+    val clothingDetails: ClothingDetails = ClothingDetails()
 )
-
-data class PhoneDetails(
-    val ram: String = "",
-    val storage: String = "",
-    val color: String = "",
-    val batteryCapacity: String = ""
-)
-
-data class ShoeDetails(
-    val size: String = "",
-    val color: String = "",
-    val material: String = ""
-)
-
 data class ClothingDetails(
     val size: String = "",
     val color: String = "",
     val material: String = ""
 )
 
-data class HeadphoneDetails(
-    val color: String = "",
-    val connectivity: String = "",       // "Wired" or "Wireless"
-    val batteryLife: String = ""
-)
