@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.buythings.presentation.HomeScreen
+import com.example.buythings.presentation.navigation.Nav
 import com.example.buythings.ui.theme.BuyThingsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,7 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BuyThingsTheme {
-                   HomeScreen()
+                   Nav()
             }
         }
     }

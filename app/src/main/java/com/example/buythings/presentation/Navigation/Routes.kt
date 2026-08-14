@@ -1,4 +1,4 @@
-package com.example.shopping.presentation.navigation
+package com.example.buythings.presentation.navigation
 
 import kotlinx.serialization.Serializable
 
