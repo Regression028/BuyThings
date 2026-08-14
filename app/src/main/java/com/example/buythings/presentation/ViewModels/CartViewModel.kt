@@ -11,7 +11,7 @@ import com.example.buythings.domain.repo.Repo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-  /** This is the most interesting viewmodel as it contains logic */
+  /** This is the most interesting viewmodel as it contains log*/
 data class CartScreenState(
     val isLoading: Boolean = false,
     val cartItems: List<CartItem> = emptyList(),
