@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.buythings.presentation.EachProductDetailsScreen
 import com.example.buythings.presentation.HomeScreen
 
 @Composable
@@ -36,8 +37,11 @@ fun Nav() {
             val route =
                 backStackEntry.toRoute<Routes.EachProductDetailsScreen>()
 
-            Routes.EachProductDetailsScreen(
-                productID = route.productID
+            EachProductDetailsScreen(
+                productID = route.productID,
+                onBackClick = {
+                    navController.popBackStack()
+                }
             )
         }
     }
