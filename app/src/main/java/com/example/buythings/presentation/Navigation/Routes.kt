@@ -1,4 +1,5 @@
 package com.example.buythings.presentation.navigation
+import com.example.buythings.presentation.CartScreen
 
 import kotlinx.serialization.Serializable
 
@@ -33,9 +34,8 @@ sealed class Routes {
     object CartScreen : Routes()
 
     @Serializable
-    data class CheckoutScreen(
-        val productId: String
-    ) : Routes()
+
+    object CheckoutScreen : Routes()
 
     @Serializable
     object PayScreen : Routes()

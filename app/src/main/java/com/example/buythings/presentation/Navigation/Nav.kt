@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.buythings.presentation.CartScreen
 import com.example.buythings.presentation.EachProductDetailsScreen
 import com.example.buythings.presentation.HomeScreen
 
@@ -28,6 +29,13 @@ fun Nav() {
                             productID = productId
                         )
                     )
+                },
+
+                onCartClick = {
+
+                    navController.navigate(
+                        Routes.CartScreen
+                    )
                 }
             )
         }
@@ -41,6 +49,23 @@ fun Nav() {
                 productID = route.productID,
                 onBackClick = {
                     navController.popBackStack()
+                }
+            )
+
+        }
+        // CART
+        // CART
+
+        composable<Routes.CartScreen> {
+
+            CartScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onCheckoutClick = {
+                    navController.navigate(
+                        Routes.CheckoutScreen
+                    )
                 }
             )
         }
