@@ -1,4 +1,5 @@
 package com.example.buythings.presentation.navigation
+import com.example.buythings.presentation.CheckoutScreen
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -68,6 +69,10 @@ fun Nav() {
                     )
                 }
             )
+        }
+        composable<Routes.CheckoutScreen> {
+
+            CheckoutScreen()
         }
     }
 }
