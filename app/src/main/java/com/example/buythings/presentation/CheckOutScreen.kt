@@ -36,19 +36,25 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.buythings.presentation.ViewModels.CartViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.buythings.presentation.ViewModels.UserViewModel
 
 private val CoralPink = Color(0xFFF08080)
 
 @Composable
 fun CheckoutScreen(
     onBackClick: () -> Unit,
-    viewModel: CartViewModel = hiltViewModel()
+    cartViewModel: CartViewModel = hiltViewModel(),
+    userViewModel: UserViewModel = hiltViewModel()
 ) {
 
-    val uiState = viewModel.uiState
+    val cartState = cartViewModel.uiState
+    val userState = userViewModel.uiState
 
     LaunchedEffect(Unit) {
-        viewModel.getCart()
+
+        cartViewModel.getCart()
+        userViewModel.getUserData()
     }
 
     Box(
@@ -116,7 +122,7 @@ fun CheckoutScreen(
                 }
 
                 items(
-                    items = uiState.cartItems,
+                    items = cartState.cartItems,
                     key = { it.id }
                 ) { cartItem ->
 
@@ -259,19 +265,19 @@ fun CheckoutScreen(
 
                             CheckoutSummaryRow(
                                 label = "Subtotal",
-                                value = "₹${uiState.subtotal.toInt()}"
+                                value = "₹${cartState.subtotal.toInt()}"
                             )
 
                             CheckoutSummaryRow(
                                 label = "Delivery",
-                                value = "₹${uiState.deliveryFee.toInt()}"
+                                value = "₹${cartState.deliveryFee.toInt()}"
                             )
 
-                            if (uiState.discount > 0) {
+                            if (cartState.discount > 0) {
 
                                 CheckoutSummaryRow(
                                     label = "Discount",
-                                    value = "-₹${uiState.discount.toInt()}"
+                                    value = "-₹${cartState.discount.toInt()}"
                                 )
                             }
 
@@ -279,7 +285,7 @@ fun CheckoutScreen(
 
                             CheckoutSummaryRow(
                                 label = "Total",
-                                value = "₹${uiState.total.toInt()}",
+                                value = "₹${cartState.total.toInt()}",
                                 bold = true
                             )
                         }
