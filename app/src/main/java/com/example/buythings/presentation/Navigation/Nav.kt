@@ -72,7 +72,11 @@ fun Nav() {
         }
         composable<Routes.CheckoutScreen> {
 
-            CheckoutScreen()
+            CheckoutScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
