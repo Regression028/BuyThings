@@ -68,6 +68,7 @@ private val CoralPink = Color(0xFFF08080)
 fun HomeScreen(
     onProductClick: (String) -> Unit,
     onCartClick: () -> Unit,
+    onProfileClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -147,6 +148,7 @@ fun HomeScreen(
                     selected = selectedBottomItem == 3,
                     onClick = {
                         selectedBottomItem = 3
+                        onProfileClick()
                     },
                     icon = {
                         Icon(

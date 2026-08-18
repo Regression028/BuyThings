@@ -10,6 +10,8 @@ import com.example.buythings.presentation.CartScreen
 import com.example.buythings.presentation.EachProductDetailsScreen
 import com.example.buythings.presentation.HomeScreen
 import com.example.buythings.presentation.SignUp
+import com.example.buythings.presentation.ProfileScreen
+
 
 @Composable
 fun Nav() {
@@ -37,6 +39,13 @@ fun Nav() {
 
                     navController.navigate(
                         Routes.CartScreen
+                    )
+                },
+
+                onProfileClick = {
+
+                    navController.navigate(
+                        Routes.ProfileScreen
                     )
                 }
             )
@@ -97,6 +106,14 @@ fun Nav() {
                     navController.navigate(
                         Routes.LoginScreen
                     )
+                }
+            )
+        }
+        composable<Routes.ProfileScreen> {
+
+            ProfileScreen(
+                onHomeClick = {
+                    navController.popBackStack()
                 }
             )
         }

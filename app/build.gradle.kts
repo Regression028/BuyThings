@@ -121,4 +121,5 @@ dependencies {
     implementation("com.cloudinary:cloudinary-android:2.5.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.stripe.android)
 }
