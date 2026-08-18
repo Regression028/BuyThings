@@ -12,6 +12,7 @@ import com.example.buythings.domain.repo.Repo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import android.net.Uri
 
 data class UserScreenState(
     val isLoading: Boolean = false,
@@ -187,6 +188,55 @@ class UserViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = null
                         )
+                    }
+
+                    is ResultState.Error -> {
+
+                        uiState = uiState.copy(
+                            isLoading = false,
+                            errorMessage = result.message
+                        )
+                    }
+                }
+            }
+        }
+    }
+    fun uploadProfileImage(uri: Uri) {
+
+        viewModelScope.launch {
+
+            repo.userProfileImage(uri).collect { result ->
+
+                when (result) {
+
+                    is ResultState.Loading -> {
+                        uiState = uiState.copy(
+                            isLoading = true,
+                            errorMessage = null
+                        )
+                    }
+
+                    is ResultState.Success -> {
+
+                        val currentUser = uiState.userData
+
+                        if (currentUser != null) {
+
+                            uiState = uiState.copy(
+                                userData = currentUser.copy(
+                                    profileImage = result.data
+                                ),
+                                isLoading = false,
+                                errorMessage = null
+                            )
+
+                        } else {
+
+                            uiState = uiState.copy(
+                                isLoading = false,
+                                errorMessage = null
+                            )
+                        }
                     }
 
                     is ResultState.Error -> {
