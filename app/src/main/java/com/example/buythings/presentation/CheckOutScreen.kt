@@ -1,6 +1,7 @@
 package com.example.buythings.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +43,12 @@ import coil.compose.AsyncImage
 import com.example.buythings.presentation.ViewModels.CartViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.buythings.presentation.ViewModels.UserViewModel
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
+import com.example.buythings.data.models.UserAddress
 
 private val CoralPink = Color(0xFFF08080)
 
@@ -50,6 +61,16 @@ fun CheckoutScreen(
 
     val cartState = cartViewModel.uiState
     val userState = userViewModel.uiState
+    var showAddAddressDialog by remember {
+        mutableStateOf(false)
+    }
+    var addressLabel by remember { mutableStateOf("") }
+    var addressLine1 by remember { mutableStateOf("") }
+    var addressLine2 by remember { mutableStateOf("") }
+    var city by remember { mutableStateOf("") }
+    var state by remember { mutableStateOf("") }
+    var pincode by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
 
@@ -234,6 +255,154 @@ fun CheckoutScreen(
                     }
                 }
 
+
+                item {
+
+                    Text(
+                        text = "Delivery Address",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                if (userState.userData?.addresses?.isNotEmpty() == true) {
+
+                    items(
+                        items = userState.userData!!.addresses,
+                        key = { it.id }
+                    ) { address ->
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    // Address selection will be added next
+                                },
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            )
+                        ) {
+
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+
+                                // Address label
+                                Text(
+                                    text = address.label.uppercase(),
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+
+                                Spacer(
+                                    modifier = Modifier.height(10.dp)
+                                )
+
+                                // Address
+                                Text(
+                                    text = address.addressLine1,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+
+                                if (address.addressLine2.isNotBlank()) {
+
+                                    Text(
+                                        text = address.addressLine2,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        fontSize = 14.sp
+                                    )
+                                }
+
+                                Text(
+                                    text = "${address.city}, ${address.state} - ${address.pincode}",
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontSize = 14.sp
+                                )
+
+                                Spacer(
+                                    modifier = Modifier.height(8.dp)
+                                )
+
+                                // Phone
+                                Text(
+                                    text = "Phone: ${address.phoneNumber}",
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontSize = 13.sp
+                                )
+                            }
+                        }
+                    }
+
+                } else {
+
+                    item {
+
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            )
+                        ) {
+
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+
+                                Text(
+                                    text = "No delivery address saved",
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+
+                                Spacer(
+                                    modifier = Modifier.height(4.dp)
+                                )
+
+                                Text(
+                                    text = "Add an address to continue.",
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontSize = 14.sp
+                                )
+                            }
+                        }
+                    }
+                }
+
+// ADD NEW ADDRESS BUTTON
+                item {
+
+                    Spacer(
+                        modifier = Modifier.height(4.dp)
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(CoralPink)
+                            .clickable {
+                                showAddAddressDialog = true
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+
+                        Text(
+                            text = "+ Add New Address",
+                            color = Color.White,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
                 item {
 
                     Spacer(
@@ -293,6 +462,156 @@ fun CheckoutScreen(
                 }
             }
         }
+    }
+    if (showAddAddressDialog) {
+
+        AlertDialog(
+            onDismissRequest = {
+                showAddAddressDialog = false
+            },
+
+            title = {
+                Text(
+                    text = "Add New Address",
+                    fontWeight = FontWeight.Bold
+                )
+            },
+
+            text = {
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(
+                            rememberScrollState()
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+
+                    OutlinedTextField(
+                        value = addressLabel,
+                        onValueChange = {
+                            addressLabel = it
+                        },
+                        label = {
+                            Text("Label (Home, Work)")
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = addressLine1,
+                        onValueChange = {
+                            addressLine1 = it
+                        },
+                        label = {
+                            Text("Address Line 1")
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = addressLine2,
+                        onValueChange = {
+                            addressLine2 = it
+                        },
+                        label = {
+                            Text("Address Line 2")
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = city,
+                        onValueChange = {
+                            city = it
+                        },
+                        label = {
+                            Text("City")
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = state,
+                        onValueChange = {
+                            state = it
+                        },
+                        label = {
+                            Text("State")
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = pincode,
+                        onValueChange = {
+                            pincode = it
+                        },
+                        label = {
+                            Text("Pincode")
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    OutlinedTextField(
+                        value = phoneNumber,
+                        onValueChange = {
+                            phoneNumber = it
+                        },
+                        label = {
+                            Text("Phone Number")
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+
+            confirmButton = {
+
+                TextButton(
+                    onClick = {
+
+                        val newAddress = UserAddress(
+                            id = System.currentTimeMillis().toString(),
+                            label = addressLabel,
+                            addressLine1 = addressLine1,
+                            addressLine2 = addressLine2,
+                            city = city,
+                            state = state,
+                            pincode = pincode,
+                            phoneNumber = phoneNumber,
+                            isDefault = false
+                        )
+
+                        userViewModel.addAddress(newAddress)
+
+                        showAddAddressDialog = false
+
+                        addressLabel = ""
+                        addressLine1 = ""
+                        addressLine2 = ""
+                        city = ""
+                        state = ""
+                        pincode = ""
+                        phoneNumber = ""
+                    }
+                ) {
+                    Text("Save Address")
+                }
+            },
+
+            dismissButton = {
+
+                TextButton(
+                    onClick = {
+                        showAddAddressDialog = false
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
 

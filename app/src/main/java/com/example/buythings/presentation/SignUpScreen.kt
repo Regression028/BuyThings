@@ -50,8 +50,8 @@ fun SignUp(
     LaunchedEffect(uiState) {
         when (uiState) {
             is AuthUiState.Success -> {
-                Toast.makeText(context, "Account created!", Toast.LENGTH_SHORT).show()
-                authViewModel.resetState()
+                Toast.makeText(context, "SUCCESS STATE REACHED", Toast.LENGTH_LONG).show()
+
                 onSignUpSuccess()
             }
             is AuthUiState.Error -> {

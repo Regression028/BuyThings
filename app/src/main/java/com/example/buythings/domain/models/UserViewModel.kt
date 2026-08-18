@@ -75,17 +75,93 @@ class UserViewModel @Inject constructor(
 
     fun addAddress(address: UserAddress) {
 
-        val currentUser = uiState.userData ?: return
+        viewModelScope.launch {
 
-        val updatedAddresses =
-            currentUser.addresses + address
+            val currentUser = uiState.userData
 
-        val updatedUser =
-            currentUser.copy(
-                addresses = updatedAddresses
-            )
+            if (currentUser != null) {
 
-        updateUser(updatedUser)
+                val updatedUser = currentUser.copy(
+                    addresses = currentUser.addresses + address
+                )
+
+                updateUser(updatedUser)
+
+            } else {
+
+                val uid = repoUid()
+
+                if (uid == null) {
+
+                    uiState = uiState.copy(
+                        errorMessage = "User is not logged in"
+                    )
+
+                    return@launch
+                }
+
+                repo.getUserById(uid).collect { result ->
+
+                    when (result) {
+
+                        is ResultState.Loading -> {
+
+                            uiState = uiState.copy(
+                                isLoading = true,
+                                errorMessage = null
+                            )
+                        }
+
+                        is ResultState.Success -> {
+
+                            val currentUserData = result.data.userData
+
+                            val updatedUser = currentUserData.copy(
+                                addresses = currentUserData.addresses + address
+                            )
+
+                            repo.updateUserData(updatedUser).collect { updateResult ->
+
+                                when (updateResult) {
+
+                                    is ResultState.Loading -> {
+
+                                        uiState = uiState.copy(
+                                            isLoading = true
+                                        )
+                                    }
+
+                                    is ResultState.Success -> {
+
+                                        uiState = uiState.copy(
+                                            userData = updatedUser,
+                                            isLoading = false,
+                                            errorMessage = null
+                                        )
+                                    }
+
+                                    is ResultState.Error -> {
+
+                                        uiState = uiState.copy(
+                                            isLoading = false,
+                                            errorMessage = updateResult.message
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        is ResultState.Error -> {
+
+                            uiState = uiState.copy(
+                                isLoading = false,
+                                errorMessage = result.message
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun updateUser(userData: UserData) {

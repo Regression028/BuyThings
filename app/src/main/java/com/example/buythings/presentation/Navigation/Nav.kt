@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import com.example.buythings.presentation.CartScreen
 import com.example.buythings.presentation.EachProductDetailsScreen
 import com.example.buythings.presentation.HomeScreen
+import com.example.buythings.presentation.SignUp
 
 @Composable
 fun Nav() {
@@ -75,6 +76,27 @@ fun Nav() {
             CheckoutScreen(
                 onBackClick = {
                     navController.popBackStack()
+                }
+            )
+        }
+        composable<Routes.SignUpScreen> {
+
+            SignUp(
+                onSignUpSuccess = {
+                    navController.navigate(
+                        Routes.HomeScreen
+                    ) {
+                        popUpTo<Routes.SignUpScreen> {
+                            inclusive = true
+                        }
+                    }
+                },
+
+                onLoginClick = {
+
+                    navController.navigate(
+                        Routes.LoginScreen
+                    )
                 }
             )
         }
