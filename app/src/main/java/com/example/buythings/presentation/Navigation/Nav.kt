@@ -11,6 +11,10 @@ import com.example.buythings.presentation.EachProductDetailsScreen
 import com.example.buythings.presentation.HomeScreen
 import com.example.buythings.presentation.SignUp
 import com.example.buythings.presentation.ProfileScreen
+import com.example.buythings.presentation.CategoryProductsScreen
+import com.example.buythings.presentation.AllCategoriesScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.buythings.presentation.ViewModels.UserViewModel
 
 
 @Composable
@@ -31,6 +35,21 @@ fun Nav() {
                     navController.navigate(
                         Routes.EachProductDetailsScreen(
                             productID = productId
+                        )
+                    )
+                },
+                onSeeAllCategoriesClick = {
+
+                    navController.navigate(
+                        Routes.AllCategoriesScreen
+                    )
+                },
+
+                onCategoryClick = { categoryId, categoryName ->
+                    navController.navigate(
+                        Routes.EachCategoryItemsScreen(
+                            categoryId = categoryId,
+                            categoryName = categoryName
                         )
                     )
                 },
@@ -111,11 +130,63 @@ fun Nav() {
         }
         composable<Routes.ProfileScreen> {
 
+            val userViewModel: UserViewModel = hiltViewModel()
+
             ProfileScreen(
+
                 onHomeClick = {
                     navController.popBackStack()
+                },
+
+                onLogout = {
+
+                    userViewModel.logout()
+
+                    navController.navigate(
+                        Routes.SignUpScreen
+                    ) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
+
+        composable<Routes.EachCategoryItemsScreen> { backStackEntry ->
+            val route = backStackEntry.toRoute<Routes.EachCategoryItemsScreen>()
+            CategoryProductsScreen(
+                categoryId = route.categoryId,
+                categoryName = route.categoryName,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onProductClick = { productId ->
+                    navController.navigate(
+                        Routes.EachProductDetailsScreen(productID = productId)
+                    )
+                }
+            )
+        }
+        composable<Routes.AllCategoriesScreen> {
+
+            AllCategoriesScreen(
+
+                onBackClick = {
+                    navController.popBackStack()
+                },
+
+                onCategoryClick = { categoryId, categoryName ->
+
+                    navController.navigate(
+                        Routes.EachCategoryItemsScreen(
+                            categoryId = categoryId,
+                            categoryName = categoryName
+                        )
+                    )
+                }
+            )
+        }
+
     }
 }

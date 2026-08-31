@@ -12,6 +12,7 @@ import com.example.buythings.data.models.UserData
 import com.example.buythings.data.models.UserDataParent
 import com.example.buythings.domain.repo.Repo
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
@@ -597,6 +598,43 @@ class RepoImpl @Inject constructor(
                             ?: "Failed to get cart items"
                     )
                 )
+                close()
+            }
+
+        awaitClose()
+    }
+    override fun loginWithGoogle(
+        idToken: String
+    ): Flow<ResultState<String>> = callbackFlow {
+
+        trySend(ResultState.Loading)
+
+        val credential = GoogleAuthProvider.getCredential(
+            idToken,
+            null
+        )
+
+        firebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener { result ->
+
+                if (result.isSuccessful) {
+
+                    trySend(
+                        ResultState.Success(
+                            "Google Login Successful"
+                        )
+                    )
+
+                } else {
+
+                    trySend(
+                        ResultState.Error(
+                            result.exception?.localizedMessage
+                                ?: "Google Login Failed"
+                        )
+                    )
+                }
+
                 close()
             }
 

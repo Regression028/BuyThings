@@ -257,6 +257,14 @@ class UserViewModel @Inject constructor(
             .currentUser
             ?.uid
     }
+    fun logout() {
+
+        com.google.firebase.auth.FirebaseAuth
+            .getInstance()
+            .signOut()
+
+        resetState()
+    }
 
     fun resetState() {
         uiState = UserScreenState()

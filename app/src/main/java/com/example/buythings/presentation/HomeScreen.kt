@@ -66,10 +66,12 @@ private val CoralPink = Color(0xFFF08080)
 
 @Composable
 fun HomeScreen(
-    onProductClick: (String) -> Unit,
-    onCartClick: () -> Unit,
-    onProfileClick: () -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+onProductClick: (String) -> Unit,
+onCategoryClick: (String, String) -> Unit,
+onCartClick: () -> Unit,
+onProfileClick: () -> Unit,
+onSeeAllCategoriesClick: () -> Unit,
+viewModel: HomeViewModel = hiltViewModel()
 ) {
 
     var searchText by remember {
@@ -271,7 +273,9 @@ fun HomeScreen(
                 SectionHeader(
                     title = "Categories",
                     actionText = "See all",
-                    onActionClick = { }
+                    onActionClick = {
+                        onSeeAllCategoriesClick()
+                    }
                 )
             }
 
@@ -288,7 +292,12 @@ fun HomeScreen(
 
                         CategoryItem(
                             category = category,
-                            onClick = { }
+                            onClick = {
+                                onCategoryClick(
+                                    category.id,
+                                    category.name
+                                )
+                            }
                         )
                     }
                 }

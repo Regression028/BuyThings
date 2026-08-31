@@ -53,6 +53,7 @@ sealed class Routes {
 
     @Serializable
     data class EachCategoryItemsScreen(
+        val categoryId: String,
         val categoryName: String
     ) : Routes()
 }

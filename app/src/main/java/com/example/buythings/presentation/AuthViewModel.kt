@@ -58,6 +58,28 @@ class AuthViewModel @Inject constructor(
                 }
         }
     }
+    fun loginWithGoogle(idToken: String) {
+        viewModelScope.launch {
+            repo.loginWithGoogle(idToken)
+                .collect { result ->
+
+                    when (result) {
+
+                        is ResultState.Loading -> {
+                            uiState = AuthUiState.Loading
+                        }
+
+                        is ResultState.Success -> {
+                            uiState = AuthUiState.Success
+                        }
+
+                        is ResultState.Error -> {
+                            uiState = AuthUiState.Error(result.message)
+                        }
+                    }
+                }
+        }
+    }
 
     fun login(email: String, password: String) {
         viewModelScope.launch {

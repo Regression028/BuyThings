@@ -58,4 +58,5 @@ interface Repo {
     ): Flow<ResultState<String>>
 
     fun clearCart(): Flow<ResultState<String>>
+    fun loginWithGoogle(idToken: String): Flow<ResultState<String>>
 }

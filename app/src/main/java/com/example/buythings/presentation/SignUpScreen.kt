@@ -1,6 +1,8 @@
 package com.example.buythings.presentation
 
+import androidx.credentials.CredentialManager
 import androidx.compose.foundation.layout.*
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -29,6 +31,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.buythings.data.models.UserData
+import android.app.Activity
+
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.CustomCredential
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUp(
@@ -37,6 +49,7 @@ fun SignUp(
     onLoginClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    val credentialManager = CredentialManager.create(context)
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -59,6 +72,63 @@ fun SignUp(
                 authViewModel.resetState()
             }
             else -> Unit
+        }
+    }
+    fun signInWithGoogle() {
+
+        val googleIdOption = GetGoogleIdOption.Builder()
+            .setServerClientId(
+                context.getString(com.example.buythings.R.string.default_web_client_id)
+            )
+            .setFilterByAuthorizedAccounts(false)
+            .setAutoSelectEnabled(false)
+            .build()
+
+        val request = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
+
+        CoroutineScope(Dispatchers.Main).launch {
+
+            try {
+
+                val result = credentialManager.getCredential(
+                    context,
+                    request
+                )
+
+                val credential = result.credential
+
+                if (
+                    credential is CustomCredential &&
+                    credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+                ) {
+
+                    val googleCredential =
+                        GoogleIdTokenCredential.createFrom(credential.data)
+
+                    val idToken = googleCredential.idToken
+
+                    authViewModel.loginWithGoogle(idToken)
+
+                }
+
+            } catch (e: GoogleIdTokenParsingException) {
+
+                Toast.makeText(
+                    context,
+                    "Google sign-in failed",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            } catch (e: Exception) {
+
+                Toast.makeText(
+                    context,
+                    e.localizedMessage ?: "Google sign-in failed",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
@@ -245,7 +315,7 @@ fun SignUp(
 
             OutlinedButton(
                 onClick = {
-
+                    signInWithGoogle()
 
                 },
                 modifier = Modifier
