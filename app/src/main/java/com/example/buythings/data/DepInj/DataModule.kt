@@ -46,7 +46,7 @@ object DataModule {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:5001/")
+            .baseUrl("http://127.0.0.1:5001/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
