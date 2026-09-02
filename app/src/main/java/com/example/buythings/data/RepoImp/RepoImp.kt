@@ -23,6 +23,7 @@ import javax.inject.Inject
 class RepoImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firebaseFirestore: FirebaseFirestore,
+    private val paymentApiService: com.example.buythings.data.network.PaymentApiService,
     @ApplicationContext private val context: Context
 ) : Repo {
 
@@ -638,6 +639,52 @@ class RepoImpl @Inject constructor(
                 close()
             }
 
+        awaitClose()
+    }
+
+    override fun createPaymentOrder(
+        amount: Double
+    ): Flow<ResultState<com.example.buythings.domain.models.CreateOrderResponse>> = callbackFlow {
+        trySend(ResultState.Loading)
+        try {
+            val response = paymentApiService.createOrder(
+                com.example.buythings.domain.models.CreateOrderRequest(amount = amount)
+            )
+            if (response.success && response.order != null) {
+                trySend(ResultState.Success(response))
+            } else {
+                trySend(ResultState.Error(response.message ?: "Failed to create order"))
+            }
+        } catch (e: Exception) {
+            trySend(ResultState.Error(e.localizedMessage ?: "Network error creating payment order"))
+        }
+        close()
+        awaitClose()
+    }
+
+    override fun verifyPayment(
+        orderId: String,
+        paymentId: String,
+        signature: String
+    ): Flow<ResultState<com.example.buythings.domain.models.VerifyPaymentResponse>> = callbackFlow {
+        trySend(ResultState.Loading)
+        try {
+            val response = paymentApiService.verifyPayment(
+                com.example.buythings.domain.models.VerifyPaymentRequest(
+                    orderId = orderId,
+                    paymentId = paymentId,
+                    signature = signature
+                )
+            )
+            if (response.success) {
+                trySend(ResultState.Success(response))
+            } else {
+                trySend(ResultState.Error(response.message))
+            }
+        } catch (e: Exception) {
+            trySend(ResultState.Error(e.localizedMessage ?: "Network error verifying payment"))
+        }
+        close()
         awaitClose()
     }
 }

@@ -59,4 +59,7 @@ interface Repo {
 
     fun clearCart(): Flow<ResultState<String>>
     fun loginWithGoogle(idToken: String): Flow<ResultState<String>>
+
+    fun createPaymentOrder(amount: Double): Flow<ResultState<com.example.buythings.domain.models.CreateOrderResponse>>
+    fun verifyPayment(orderId: String, paymentId: String, signature: String): Flow<ResultState<com.example.buythings.domain.models.VerifyPaymentResponse>>
 }

@@ -7,19 +7,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.buythings.common.ResultState
 import com.example.buythings.data.models.CartItem
+import com.example.buythings.domain.models.CreateOrderResponse
 import com.example.buythings.domain.repo.Repo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-  /** This is the most interesting viewmodel as it contains log*/
+
 data class CartScreenState(
     val isLoading: Boolean = false,
+    val isPaymentLoading: Boolean = false,
     val cartItems: List<CartItem> = emptyList(),
     val subtotal: Double = 0.0,
     val deliveryFee: Double = 0.0,
     val discount: Double = 0.0,
     val total: Double = 0.0,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val paymentErrorMessage: String? = null,
+    val razorpayOrderResponse: CreateOrderResponse? = null,
+    val isPaymentVerified: Boolean = false,
+    val verifiedPaymentId: String? = null
 )
 
 @HiltViewModel
@@ -213,6 +219,77 @@ class CartViewModel @Inject constructor(
         }
     }
 
+    fun createPaymentOrder(amount: Double) {
+        viewModelScope.launch {
+            repo.createPaymentOrder(amount).collect { result ->
+                when (result) {
+                    is ResultState.Loading -> {
+                        uiState = uiState.copy(
+                            isPaymentLoading = true,
+                            paymentErrorMessage = null
+                        )
+                    }
+                    is ResultState.Success -> {
+                        uiState = uiState.copy(
+                            isPaymentLoading = false,
+                            razorpayOrderResponse = result.data,
+                            paymentErrorMessage = null
+                        )
+                    }
+                    is ResultState.Error -> {
+                        uiState = uiState.copy(
+                            isPaymentLoading = false,
+                            paymentErrorMessage = result.message
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun verifyPayment(orderId: String, paymentId: String, signature: String) {
+        viewModelScope.launch {
+            repo.verifyPayment(orderId, paymentId, signature).collect { result ->
+                when (result) {
+                    is ResultState.Loading -> {
+                        uiState = uiState.copy(
+                            isPaymentLoading = true,
+                            paymentErrorMessage = null
+                        )
+                    }
+                    is ResultState.Success -> {
+                        uiState = uiState.copy(
+                            isPaymentLoading = false,
+                            isPaymentVerified = true,
+                            verifiedPaymentId = paymentId
+                        )
+                        clearCart()
+                    }
+                    is ResultState.Error -> {
+                        uiState = uiState.copy(
+                            isPaymentLoading = false,
+                            paymentErrorMessage = result.message
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun consumeRazorpayOrderResponse() {
+        uiState = uiState.copy(razorpayOrderResponse = null)
+    }
+
+    fun resetPaymentState() {
+        uiState = uiState.copy(
+            isPaymentLoading = false,
+            paymentErrorMessage = null,
+            razorpayOrderResponse = null,
+            isPaymentVerified = false,
+            verifiedPaymentId = null
+        )
+    }
+
     private fun calculateCartTotal(
         cartItems: List<CartItem>
     ) {
@@ -222,10 +299,6 @@ class CartViewModel @Inject constructor(
         }
 
         val deliveryFee = if (subtotal > 0) 50.0 else 0.0
-
-
-
-
 
         val discount = if (subtotal >= 2000) 200.0 else 0.0
 
