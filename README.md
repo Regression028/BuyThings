@@ -165,15 +165,15 @@ Sync the Gradle project and run the application using Android Studio on an emula
 - Environment variables are used to manage backend secrets.
 
 ## 📸 Screenshots
-<img width="575" height="1280" alt="image" src="https://github.com/user-attachments/assets/f8cb3d87-d634-4a1b-9a31-99680f22cb4b" />
-
-<img width="575" height="1280" alt="image" src="https://github.com/user-attachments/assets/b31ab54f-7e85-4418-bcf2-9b93dae54976" />
-<img width="575" height="1280" alt="image" src="https://github.com/user-attachments/assets/235414a2-3e64-4e1e-b951-2b3b4f0934a4" />
-<img width="575" height="1280" alt="image" src="https://github.com/user-attachments/assets/1b51d93e-0b68-4ece-9fd4-5681ff831d73" />
-<img width="575" height="1280" alt="image" src="https://github.com/user-attachments/assets/1f4a962f-b490-45a3-b903-6b1d08616d38" />
-<img width="575" height="1280" alt="image" src="https://github.com/user-attachments/assets/c26cb863-7f91-4dfd-878e-da6265cca1e3" />
-
-<img width="575" height="1280" alt="image" src="https://github.com/user-attachments/assets/33455c28-2473-4b6c-abde-965224b7b4cd" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f8cb3d87-d634-4a1b-9a31-99680f22cb4b" width="150"/>
+  <img src="https://github.com/user-attachments/assets/b31ab54f-7e85-4418-bcf2-9b93dae54976" width="150"/>
+  <img src="https://github.com/user-attachments/assets/235414a2-3e64-4e1e-b951-2b3b4f0934a4" width="150"/>
+  <img src="https://github.com/user-attachments/assets/1b51d93e-0b68-4ece-9fd4-5681ff831d73" width="150"/>
+  <img src="https://github.com/user-attachments/assets/1f4a962f-b490-45a3-b903-6b1d08616d38" width="150"/>
+  <img src="https://github.com/user-attachments/assets/c26cb863-7f91-4dfd-878e-da6265cca1e3" width="150"/>
+  <img src="https://github.com/user-attachments/assets/33455c28-2473-4b6c-abde-965224b7b4cd" width="150"/>
+</p>
 
 ## 🔮 Future Improvements
 
